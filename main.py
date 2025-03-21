@@ -5,7 +5,6 @@ import threading
 from dotenv import load_dotenv
 from PIL import Image
 
-# Agora importamos do langchain_openai, conforme recomendação:
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
@@ -52,11 +51,7 @@ def create_rag_pipeline(texts):
 def answer_question(pdf_path, question):
     text = extract_text_from_pdf(pdf_path)
     chain = create_rag_pipeline([text])
-    # Em vez de chain.run(question), use chain.invoke(...)
     result = chain.invoke({"query": question})
-    # No caso do "stuff", possivelmente result já é string.
-    # Se for um dicionário, faça result["result"] ou result["text"] etc.
-    # Teste para verificar qual a saída exata no seu caso.
     return result
 
 ############################
@@ -110,7 +105,6 @@ def process_question(question, placeholder_frame):
     Roda em outra thread p/ não travar a GUI.
     """
     response = answer_question(pdf_path, question)
-    # Se "response" for um dicionário, adapte (ex: response["result"] ou algo do tipo)
     if isinstance(response, dict):
         response = response.get("result", "") or response.get("text", "")
 
